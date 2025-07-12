@@ -1,0 +1,6 @@
+[submodule "external/ModUtils"]
+	path = external/ModUtils
+	url = https://github.com/CookiePLMonster/ModUtils
+[submodule "external/Win32xx"]
+	path = external/Win32xx
+	url = https://github.com/DavidNash2024/Win32xx.git

@@ -1,0 +1,5 @@
+build
+.idea
+.clang-format
+.vs
+Resource.aps

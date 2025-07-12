@@ -1,0 +1,130 @@
+// Microsoft Visual C++ generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#define APSTUDIO_HIDDEN_SYMBOLS
+#include "windows.h"
+#undef APSTUDIO_HIDDEN_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// English (United States) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+#pragma code_page(1252)
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+IDW_MAIN                ICON                    "./res/Dialog.ico"
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Bitmap
+//
+
+IDB_BITMAP1             BITMAP                  "./res/Zapotec.bmp"
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_DIALOG1 DIALOGEX 0, 0, 320, 132
+STYLE DS_SETFONT | WS_MINIMIZEBOX | WS_POPUP | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CAPTION | WS_SYSMENU | WS_THICKFRAME
+EXSTYLE WS_EX_APPWINDOW
+CAPTION "Tonic Trouble - Configuration"
+FONT 9, "Segoe UI", 400, 0, 0x0
+BEGIN
+    COMBOBOX        IDC_COMBO1,80,7,233,30,CBS_DROPDOWNLIST | CBS_SORT | WS_VSCROLL | WS_TABSTOP
+    COMBOBOX        IDC_COMBO2,80,23,233,30,CBS_DROPDOWNLIST | CBS_SORT | WS_VSCROLL | WS_TABSTOP
+    COMBOBOX        IDC_COMBO3,80,53,233,30,CBS_DROPDOWNLIST | CBS_SORT | WS_VSCROLL | WS_TABSTOP
+    COMBOBOX        IDC_COMBO4,80,69,233,30,CBS_DROPDOWNLIST | CBS_SORT | WS_VSCROLL | WS_TABSTOP
+    CONTROL         "Graphics Adapter:",IDC_TEXT,"Static",SS_LEFTNOWORDWRAP | WS_GROUP,7,9,71,8,WS_EX_TRANSPARENT | WS_EX_RIGHT
+    CONTROL         "Resolution:",IDC_TEXT2,"Static",SS_LEFTNOWORDWRAP | WS_GROUP,7,25,71,8,WS_EX_TRANSPARENT | WS_EX_RIGHT
+    CONTROL         "Anti-Aliasing:",IDC_TEXT3,"Static",SS_LEFTNOWORDWRAP | WS_GROUP,7,55,71,8,WS_EX_TRANSPARENT | WS_EX_RIGHT
+    CONTROL         "Anisotropic Filtering:",IDC_TEXT4,"Static",SS_LEFTNOWORDWRAP | WS_GROUP,7,71,71,8,WS_EX_TRANSPARENT | WS_EX_RIGHT
+    PUSHBUTTON      "OK",IDOK,209,112,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,263,112,50,14
+    CONTROL         "Windowed Mode",IDC_CHECK1,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,80,39,233,10
+END
+
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE 
+BEGIN
+    "#define APSTUDIO_HIDDEN_SYMBOLS\r\n"
+    "#include ""windows.h""\r\n"
+    "#undef APSTUDIO_HIDDEN_SYMBOLS\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE 
+BEGIN
+    "\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO
+BEGIN
+    IDD_DIALOG1, DIALOG
+    BEGIN
+        VERTGUIDE, 7
+        VERTGUIDE, 78
+        VERTGUIDE, 80
+        VERTGUIDE, 313
+        HORZGUIDE, 7
+        HORZGUIDE, 105
+        HORZGUIDE, 126
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+#endif    // English (United States) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+
