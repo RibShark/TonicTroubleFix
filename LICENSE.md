@@ -16,10 +16,9 @@ along with this program; if not, see <https://www.gnu.org/licenses>.
 Additional permission under GNU GPL version 3 section 7
 
 If you modify this Program, or any covered work, by linking or
-combining it with software containing any version of SafeDisc as
-originally authored by Macrovision Solutions Corporation, the licensors
-of this Program grant you additional permission to convey the resulting
-work.
+combining it with software containing any version of Tonic Trouble as
+originally authored by Ubi Soft, the licensors of this Program grant
+you additional permission to convey the resulting work.
 
 ---
 
