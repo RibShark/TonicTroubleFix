@@ -121,13 +121,25 @@ namespace BlitFix {
             }
             lpSourceSurface->Unlock(nullptr);
 
-            float aspect = static_cast<float>(width) / static_cast<float>(height);
-            auto newWidth = static_cast<int>(static_cast<float>(ddscDst.dwHeight) * aspect);
+            float aspectBmp = static_cast<float>(width) / static_cast<float>(height);
+            float aspectGame = static_cast<float>(ddscDst.dwWidth) / static_cast<float>(ddscDst.dwHeight);
             RECT rect{};
-            rect.left = static_cast<LONG>(ddscDst.dwWidth - newWidth) / 2;
-            rect.right = static_cast<LONG>(ddscDst.dwWidth - rect.left);
-            rect.top = 0;
-            rect.bottom = static_cast<LONG>(ddscDst.dwHeight);
+            if (aspectBmp > aspectGame)
+            {
+                auto newHeight = static_cast<int>(static_cast<float>(ddscDst.dwWidth) / aspectBmp);
+                rect.left = 0;
+                rect.right = static_cast<LONG>(ddscDst.dwWidth);
+                rect.top = static_cast<LONG>(ddscDst.dwHeight - newHeight) / 2;
+                rect.bottom = static_cast<LONG>(ddscDst.dwHeight - rect.top);
+            }
+            else
+            {
+                auto newWidth = static_cast<int>(static_cast<float>(ddscDst.dwHeight) * aspectBmp);
+                rect.left = static_cast<LONG>(ddscDst.dwWidth - newWidth) / 2;
+                rect.right = static_cast<LONG>(ddscDst.dwWidth - rect.left);
+                rect.top = 0;
+                rect.bottom = static_cast<LONG>(ddscDst.dwHeight);
+            }
 
             DDBLTFX fx{};
             fx.dwSize = sizeof(DDBLTFX);
@@ -199,13 +211,25 @@ namespace BlitFix {
             }
             lpSourceSurface->Unlock(nullptr);
 
-            float aspect = static_cast<float>(width) / static_cast<float>(height);
-            auto newWidth = static_cast<int>(static_cast<float>(ddscDst.dwHeight) * aspect);
+            float aspectBmp = static_cast<float>(width) / static_cast<float>(height);
+            float aspectGame = static_cast<float>(ddscDst.dwWidth) / static_cast<float>(ddscDst.dwHeight);
             RECT rect{};
-            rect.left = static_cast<LONG>(ddscDst.dwWidth - newWidth) / 2;
-            rect.right = static_cast<LONG>(ddscDst.dwWidth - rect.left);
-            rect.top = 0;
-            rect.bottom = static_cast<LONG>(ddscDst.dwHeight);
+            if (aspectBmp > aspectGame)
+            {
+                auto newHeight = static_cast<int>(static_cast<float>(ddscDst.dwWidth) / aspectBmp);
+                rect.left = 0;
+                rect.right = static_cast<LONG>(ddscDst.dwWidth);
+                rect.top = static_cast<LONG>(ddscDst.dwHeight - newHeight) / 2;
+                rect.bottom = static_cast<LONG>(ddscDst.dwHeight - rect.top);
+            }
+            else
+            {
+                auto newWidth = static_cast<int>(static_cast<float>(ddscDst.dwHeight) * aspectBmp);
+                rect.left = static_cast<LONG>(ddscDst.dwWidth - newWidth) / 2;
+                rect.right = static_cast<LONG>(ddscDst.dwWidth - rect.left);
+                rect.top = 0;
+                rect.bottom = static_cast<LONG>(ddscDst.dwHeight);
+            }
 
             DDBLTFX fx{};
             fx.dwSize = sizeof(DDBLTFX);
