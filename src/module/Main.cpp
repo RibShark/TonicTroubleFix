@@ -479,12 +479,27 @@ void OnInitializeHook() {
     }
 
     // Copy current.cfg from GAMEDATA to save directory if it doesn't exist
-    std::filesystem::path CfgPathSrc = std::filesystem::current_path();
-    CfgPathSrc += R"(\GAMEDATA\Options\Current.cfg)";
-    std::filesystem::path CfgPathDst = Config.ConfigPath;
-    CfgPathDst += R"(\Options\Current.cfg)";
+    {
+        std::filesystem::path CfgPathSrc = std::filesystem::current_path();
+        CfgPathSrc += R"(\GAMEDATA\Options\Current.cfg)";
+        std::filesystem::path CfgPathDst = Config.ConfigPath;
+        CfgPathDst += R"(\Options\Current.cfg)";
 
-    std::filesystem::copy_file(CfgPathSrc, CfgPathDst, std::filesystem::copy_options::skip_existing);
+        std::filesystem::copy_file(CfgPathSrc, CfgPathDst, std::filesystem::copy_options::skip_existing);
+    }
+
+    // Show error and quit if ubi.ini is not in save directory
+    {
+        std::filesystem::path IniPath = Config.ConfigPath;
+        IniPath += R"(\ubi.ini)";
+        if (!std::filesystem::exists(IniPath))
+        {
+            MessageBox(nullptr, "Tonic Trouble's configuration file could not be found. Please run the "
+                "configuration program before running Tonic Trouble.", "Error", MB_OK);
+            ExitProcess(0);
+        }
+
+    }
 
     // Force resolution
     try {
