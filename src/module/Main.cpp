@@ -648,6 +648,7 @@ void OnInitializeHook() {
         SetEnvironmentVariable("DXWRAPPER_ANISOTROPICFILTERING", value);
         sprintf_s(value, "%d", Config.Windowed);
         SetEnvironmentVariable("DXWRAPPER_ENABLEWINDOWMODE", value);
+        SetEnvironmentVariable("DXWRAPPER_FULLSCREENWINDOWMODE", strcmp(value, "0") ? "0" : "1");
 
         SetEnvironmentVariable("DXWRAPPER_WINDOWMODEBORDER", "1");
         SetEnvironmentVariable("DXWRAPPER_DD7TO9", "1");
