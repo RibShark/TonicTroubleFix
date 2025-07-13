@@ -14,7 +14,7 @@
 
 struct Config
 {
-    std::filesystem::path IniPath;
+    std::filesystem::path ConfigPath;
     unsigned int Width{};
     unsigned int Height{};
     unsigned int BPP{};
@@ -437,7 +437,9 @@ namespace IniFile
         if (lpAppName != nullptr && strcmp(lpAppName, "TONICT") != 0)
             return GetPrivateProfileStringA_HOOK.stdcall<DWORD>(lpAppName, lpKeyName, lpDefault, lpReturnedString, nSize, lpFileName);
 
-        return GetPrivateProfileStringA_HOOK.stdcall<DWORD>(lpAppName, lpKeyName, lpDefault, lpReturnedString, nSize, Config.IniPath.string().c_str());
+        std::filesystem::path IniPath = Config.ConfigPath;
+        IniPath += "\\ubi.ini";
+        return GetPrivateProfileStringA_HOOK.stdcall<DWORD>(lpAppName, lpKeyName, lpDefault, lpReturnedString, nSize, IniPath.string().c_str());
     }
 }
 
@@ -455,17 +457,19 @@ void OnInitializeHook() {
         PWSTR savedGamesPath{};
         if (SHGetKnownFolderPath(FOLDERID_SavedGames, KF_FLAG_CREATE, nullptr, &savedGamesPath) == S_OK)
         {
-            Config.IniPath = savedGamesPath;
-            Config.IniPath += "\\Tonic Trouble\\ubi.ini";
+            Config.ConfigPath = savedGamesPath;
+            Config.ConfigPath += R"(\Tonic Trouble)";
             CoTaskMemFree(savedGamesPath);
         }
+        std::filesystem::path IniPath = Config.ConfigPath;
+        IniPath += R"(\ubi.ini)";
 
-        Config.Width = GetPrivateProfileIntW(appName, L"Width", 640, Config.IniPath.c_str());
-        Config.Height = GetPrivateProfileIntW(appName, L"Height", 480, Config.IniPath.c_str());
-        Config.BPP = GetPrivateProfileIntW(appName, L"BPP", 32, Config.IniPath.c_str());
-        Config.Windowed = GetPrivateProfileIntW(appName, L"Windowed", 0, Config.IniPath.c_str());
-        Config.Antialiasing = GetPrivateProfileIntW(appName, L"Antialiasing", 0, Config.IniPath.c_str());
-        Config.Anisotropy = GetPrivateProfileIntW(appName, L"Anisotropy", 0, Config.IniPath.c_str());
+        Config.Width = GetPrivateProfileIntW(appName, L"Width", 640, IniPath.c_str());
+        Config.Height = GetPrivateProfileIntW(appName, L"Height", 480, IniPath.c_str());
+        Config.BPP = GetPrivateProfileIntW(appName, L"BPP", 32, IniPath.c_str());
+        Config.Windowed = GetPrivateProfileIntW(appName, L"Windowed", 0, IniPath.c_str());
+        Config.Antialiasing = GetPrivateProfileIntW(appName, L"Antialiasing", 0, IniPath.c_str());
+        Config.Anisotropy = GetPrivateProfileIntW(appName, L"Anisotropy", 0, IniPath.c_str());
     }
 
     // Hook GetPrivateProfileStringA
@@ -473,6 +477,14 @@ void OnInitializeHook() {
         using namespace IniFile;
         GetPrivateProfileStringA_HOOK = safetyhook::create_inline(GetPrivateProfileStringA, GetPrivateProfileStringA_redirect);
     }
+
+    // Copy current.cfg from GAMEDATA to save directory if it doesn't exist
+    std::filesystem::path CfgPathSrc = std::filesystem::current_path();
+    CfgPathSrc += R"(\GAMEDATA\Options\Current.cfg)";
+    std::filesystem::path CfgPathDst = Config.ConfigPath;
+    CfgPathDst += R"(\Options\Current.cfg)";
+
+    std::filesystem::copy_file(CfgPathSrc, CfgPathDst, std::filesystem::copy_options::skip_existing);
 
     // Force resolution
     try {
