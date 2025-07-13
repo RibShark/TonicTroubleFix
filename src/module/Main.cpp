@@ -506,8 +506,11 @@ void OnInitializeHook() {
     {
         std::filesystem::path CfgPathSrc = std::filesystem::current_path();
         CfgPathSrc += R"(\GAMEDATA\Options\Current.cfg)";
+
         std::filesystem::path CfgPathDst = Config.ConfigPath;
-        CfgPathDst += R"(\Options\Current.cfg)";
+        CfgPathDst += R"(\Options)";
+        std::filesystem::create_directories(CfgPathDst);
+        CfgPathDst += R"(\Current.cfg)";
 
         std::filesystem::copy_file(CfgPathSrc, CfgPathDst, std::filesystem::copy_options::skip_existing);
     }
