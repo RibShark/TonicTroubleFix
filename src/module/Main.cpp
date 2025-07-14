@@ -435,13 +435,13 @@ namespace WindowedMode
                     lpDeviceMouse->Unacquire();
                 }
             }
-            break;
+            return DefWindowProc(hWnd, msg, wParam, lParam);
         case WM_SYSKEYUP:
             // the game tries and fails to switch fullscreen mode on alt-enter
             if (wParam == VK_RETURN) return 0;
             break;
         case WM_SYSCOMMAND:
-            if (wParam == SC_CLOSE)
+            if (wParam == SC_CLOSE || wParam == SC_MINIMIZE)
                 return DefWindowProc(hWnd, msg, wParam, lParam);
             break;
         default:
@@ -590,20 +590,9 @@ void OnInitializeHook() {
         // Change windows creation params
         CreateWindowExA_HOOK = safetyhook::create_inline(CreateWindowExA, CreateWindowExA_force);
 
-        // suspend
-        auto ptn = pattern("E8 ? ? ? ? E8 ? ? ? ? A1 ? ? ? ? 6A"); // 0x4016B4
-        Nop(ptn.get_first(), 10); // don't release d3d/ddraw
-
-        // infinite loop remove
-        ptn = pattern("83 F8 ? 74 ? A1"); // 0x401663
-        Nop(ptn.get_first(3), 2);
-
-        // restore
-        ptn = pattern("A1 ? ? ? ? 83 EC ? 85 C0 0F 85"); // 0x4016E0
-        pRect = *static_cast<RECT**>(ptn.get_first(0x18)); // get pointer to cursor clip rect
-        Nop(ptn.get_first(0x6E), 5); // don't restore d3d/ddraw
-        Nop(ptn.get_first(0x2C), 12); // don't change window caption
-        Nop(ptn.get_first(0x17), 21); // don't clip cursor (we do that later when clicking inside client area)
+        // get pointer to cursor clip rect
+        auto ptn = pattern("A1 ? ? ? ? 83 EC ? 85 C0 0F 85"); // 0x4016E0
+        pRect = *static_cast<RECT**>(ptn.get_first(0x18));
 
         // get DirectInput mouse interface
         ptn = pattern("? ? 8D 54 24 ? 52 6A ? 50 FF 51 ? 3D ? ? ? ? 74 ? 3D ? ? ? ? 74 ? 85 C0 75 ? 8B 44 24 ? 8B 4C 24 ? 03 C1"); // 0x478B8D, god why is this so long
