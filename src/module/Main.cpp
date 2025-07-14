@@ -453,6 +453,30 @@ namespace WindowedMode
     }
 }
 
+namespace Indeo
+{
+    SafetyHookInline RegQueryValueExW_HOOK{};
+    LSTATUS __stdcall RegQueryValueExW_ForceIndeo(HKEY hKey, LPCWSTR lpValueName, LPDWORD reserved, LPDWORD lpType, LPBYTE lpData, LPDWORD lpcbData)
+    {
+        if (!lstrcmpiW(lpValueName, L"vidc.iv41"))
+        {
+            LSTATUS result = ERROR_SUCCESS;
+
+            const auto value = L"ir41_32.ax";
+            *lpType = REG_SZ;
+            if (sizeof(value) < *lpcbData)
+                result = ERROR_MORE_DATA;
+            *lpcbData = sizeof(value);
+            if (lpData != nullptr)
+                lstrcpyW(reinterpret_cast<LPWSTR>(lpData), value);
+
+            return result;
+        }
+
+        return RegQueryValueExW_HOOK.stdcall<LSTATUS>(hKey, lpValueName, reserved, lpType, lpData, lpcbData);
+    }
+}
+
 namespace IniFile
 {
     SafetyHookInline GetPrivateProfileStringA_HOOK{};
@@ -609,6 +633,21 @@ void OnInitializeHook() {
         Patch(ptn.get_first(4), &WndProc_Custom);
     }
     TXN_CATCH()
+
+    // fix Indeo
+    {
+        using namespace Indeo;
+
+        HMODULE module = GetModuleHandle("kernelbase.dll");
+        FARPROC RegQueryValueExW = GetProcAddress(module, "RegQueryValueExW");
+
+        if (!module || !RegQueryValueExW)
+        {
+            module = GetModuleHandle("advapi32.dll");
+            RegQueryValueExW = GetProcAddress(module, "RegQueryValueExW");
+        }
+        RegQueryValueExW_HOOK = safetyhook::create_inline(RegQueryValueExW, RegQueryValueExW_ForceIndeo);
+    }
 
     // Fix dialogue background
     try
