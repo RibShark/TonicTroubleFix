@@ -725,7 +725,8 @@ void OnInitializeHook() {
         SetEnvironmentVariable("DXWRAPPER_D3D9TO9EX", "1");
         SetEnvironmentVariable("DXWRAPPER_DDRAWFIXBYTEALIGNMENT", "1");
         SetEnvironmentVariable("DXWRAPPER_LIMITPERFRAMEFPS", "60");
-        SetEnvironmentVariable("DXWRAPPER_DINPUTTO8", "1");
+        SetEnvironmentVariable("DXWRAPPER_DINPUTTO8", "0");
+        SetEnvironmentVariable("DXWRAPPER_DINPUT8HOOKSYSTEM32", "0");
     }
 
     // load dxwrapper

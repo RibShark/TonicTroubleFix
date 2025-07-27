@@ -9,7 +9,7 @@ add_library(${PROJECT_NAME}_module SHARED src/module/Main.cpp
 
 find_package(safetyhook CONFIG REQUIRED)
 
-set_target_properties(${PROJECT_NAME}_module PROPERTIES OUTPUT_NAME "dinput" CXX_STANDARD 23 CXX_EXTENSIONS OFF)
+set_target_properties(${PROJECT_NAME}_module PROPERTIES OUTPUT_NAME "msacm32" CXX_STANDARD 23 CXX_EXTENSIONS OFF)
 target_precompile_headers(${PROJECT_NAME}_module PRIVATE src/module/pch.h)
 target_compile_features(${PROJECT_NAME}_module PRIVATE cxx_std_23)
 target_include_directories(${PROJECT_NAME}_module PRIVATE "external/ModUtils")
