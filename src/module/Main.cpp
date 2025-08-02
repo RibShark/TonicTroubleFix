@@ -491,6 +491,28 @@ namespace IniFile
     }
 }
 
+namespace Menu
+{
+    void (__cdecl *MNU_fn_vChangeDisplayableMenuItem)(void** ppItem, char bIsVisible);
+    void** (__cdecl *MNU_fn_xGetActiveMenuItem)();
+    void* (__cdecl *MNU_fn_xGetActiveMenu)();
+    void (__cdecl *MNU_fn_vSelectNextItem)(void*);
+
+    SafetyHookInline MNU_cbInitResolution_HOOK{};
+    SafetyHookInline MNU_cbInitSynchroLoop_HOOK{};
+
+    void __cdecl MNU_cbHideItem(void** ppItem)
+    {
+        MNU_fn_vChangeDisplayableMenuItem(ppItem, false);
+        if (MNU_fn_xGetActiveMenuItem() == ppItem)
+        {
+            void* menu = MNU_fn_xGetActiveMenu();
+            MNU_fn_vSelectNextItem(menu);
+        }
+    };
+
+}
+
 void OnInitializeHook() {
     using namespace Memory;
     using namespace hook::txn;
@@ -697,6 +719,23 @@ void OnInitializeHook() {
                 combinePath_HOOK = safetyhook::create_inline(pCombinePath, reinterpret_cast<void *>(combinePath_FixNonRelative));
         }
         CoTaskMemFree(savedGamesFolder);
+    }
+    TXN_CATCH()
+
+    // hide unnecessary/troublesome menu items
+    try
+    {
+        using namespace Menu;
+        MNU_fn_vChangeDisplayableMenuItem = static_cast<void(*)(void**, char)>(get_pattern("8A 44 24 ? B1 ? 32 D2")); // 0x44DD40
+        MNU_fn_xGetActiveMenuItem = static_cast<void**(*)()>(get_pattern("8B 15 ? ? ? ? 33 C0 8A 4A")); // 0x44F250
+        MNU_fn_xGetActiveMenu = static_cast<void*(*)()>(get_pattern("8B 15 ? ? ? ? 33 C0 8A 4A", -0x10)); // 0x44F240
+        MNU_fn_vSelectNextItem = static_cast<void(*)(void*)>(get_pattern("56 8B 74 24 ? 8A 46 ? 3C ? 74 ? 57")); // 0x44EE80;
+
+        void* MNU_cbInitResolution = get_pattern("56 8B 74 24 ? 6A ? ? ? 50 E8"); // 0x4115B0
+        void* MNU_cbInitSynchroLoop = get_pattern("A1 ? ? ? ? 8B 4C 24 ? 25", 0x50); // 0x411F20
+        MNU_cbInitResolution_HOOK = safetyhook::create_inline(MNU_cbInitResolution, MNU_cbHideItem);
+        MNU_cbInitSynchroLoop_HOOK = safetyhook::create_inline(MNU_cbInitSynchroLoop, MNU_cbHideItem);
+
     }
     TXN_CATCH()
 
