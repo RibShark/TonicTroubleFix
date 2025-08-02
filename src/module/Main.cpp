@@ -464,9 +464,9 @@ namespace Indeo
 
             const auto value = L"ir41_32.ax";
             *lpType = REG_SZ;
-            if (sizeof(value) < *lpcbData)
+            if (sizeof(value) < *lpcbData) // NOLINT(*-sizeof-expression)
                 result = ERROR_MORE_DATA;
-            *lpcbData = sizeof(value);
+            *lpcbData = sizeof(value); // NOLINT(*-sizeof-expression)
             if (lpData != nullptr)
                 lstrcpyW(reinterpret_cast<LPWSTR>(lpData), value);
 
