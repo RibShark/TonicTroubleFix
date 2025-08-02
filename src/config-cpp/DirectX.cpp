@@ -58,7 +58,8 @@ std::vector<CString> DirectX::GetDeviceNames()
 HRESULT WINAPI DirectX::EnumModesCallback(LPDDSURFACEDESC2 lpDDSurfaceDesc, LPVOID lpContext)
 {
     const auto modes = static_cast<std::vector<DisplayMode> *>(lpContext);
-    modes->push_back({lpDDSurfaceDesc->dwWidth, lpDDSurfaceDesc->dwHeight, lpDDSurfaceDesc->ddpfPixelFormat.dwRGBBitCount});
+    if (lpDDSurfaceDesc->ddpfPixelFormat.dwRGBBitCount != 8)
+        modes->push_back({lpDDSurfaceDesc->dwWidth, lpDDSurfaceDesc->dwHeight, lpDDSurfaceDesc->ddpfPixelFormat.dwRGBBitCount});
     return DDENUMRET_OK;
 }
 
