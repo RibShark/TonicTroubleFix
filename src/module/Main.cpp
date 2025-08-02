@@ -500,6 +500,7 @@ namespace Menu
 
     SafetyHookInline MNU_cbInitResolution_HOOK{};
     SafetyHookInline MNU_cbInitSynchroLoop_HOOK{};
+    SafetyHookInline MNU_cbInitControlTypes_HOOK{};
 
     void __cdecl MNU_cbHideItem(void** ppItem)
     {
@@ -733,9 +734,12 @@ void OnInitializeHook() {
 
         void* MNU_cbInitResolution = get_pattern("56 8B 74 24 ? 6A ? ? ? 50 E8"); // 0x4115B0
         void* MNU_cbInitSynchroLoop = get_pattern("A1 ? ? ? ? 8B 4C 24 ? 25", 0x50); // 0x411F20
+        void* MNU_cbInitControlTypes = get_pattern("56 E8 ? ? ? ? 8B 74 24 ? 3C"); //0x432B20
         MNU_cbInitResolution_HOOK = safetyhook::create_inline(MNU_cbInitResolution, MNU_cbHideItem);
         MNU_cbInitSynchroLoop_HOOK = safetyhook::create_inline(MNU_cbInitSynchroLoop, MNU_cbHideItem);
+        MNU_cbInitControlTypes_HOOK = safetyhook::create_inline(MNU_cbInitControlTypes, MNU_cbHideItem);
 
+        Nop(get_pattern("74 ? E8 ? ? ? ? E8 ? ? ? ? 56 6A ? 8D 44 24"), 2); // nop jz at 0x44A930 to force enable joystick
     }
     TXN_CATCH()
 
