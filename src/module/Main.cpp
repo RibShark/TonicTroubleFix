@@ -18,7 +18,8 @@ struct Config
     unsigned int Width{};
     unsigned int Height{};
     unsigned int BPP{};
-    bool Windowed{};
+    unsigned int WindowMode{};
+    bool VSync{};
     unsigned int Antialiasing{};
     unsigned int Anisotropy{};
 } Config;
@@ -343,22 +344,22 @@ namespace SaveGameRedirect {
 
 namespace ForceResolution {
     SafetyHookInline getWindowWidth_HOOK{};
-    int __cdecl getWindowWidth_force() {
+    unsigned int __cdecl getWindowWidth_force() {
         return Config.Width;
     }
 
     SafetyHookInline getWindowHeight_HOOK{};
-    int __cdecl getWindowHeight_force() {
+    unsigned int __cdecl getWindowHeight_force() {
         return Config.Height;
     }
 
     SafetyHookInline getBPP_HOOK{};
-    int __cdecl getBPP_force() {
+    unsigned int __cdecl getBPP_force() {
         return Config.BPP;
     }
 
     SafetyHookInline setResolutionFromOrdinal_HOOK{};
-    void __cdecl setResolutionFromOrdinal_force(int ordinal, int* pWidth, int* pHeight) {
+    void __cdecl setResolutionFromOrdinal_force(int ordinal, unsigned int* pWidth, unsigned int* pHeight) {
         *pWidth = Config.Width;
         *pHeight = Config.Height;
     }
@@ -376,8 +377,8 @@ namespace WindowedMode
     HWND __stdcall CreateWindowExA_force(DWORD dwExStyle, LPCSTR lpClassName, LPCSTR lpWindowName, DWORD dwStyle, int X, int Y, int nWidth, int nHeight, HWND hWndParent, HMENU hMenu, HINSTANCE hInstance, LPVOID lpParam)
     {
         dwStyle |= WS_SYSMENU | WS_MINIMIZEBOX | DS_CENTER;
-        nWidth = Config.Width;
-        nHeight = Config.Height;
+        nWidth = static_cast<int>(Config.Width);
+        nHeight = static_cast<int>(Config.Height);
 
         // center window
         const auto hwnd = CreateWindowExA_HOOK.stdcall<HWND>(dwExStyle, lpClassName, lpWindowName, dwStyle, X, Y, nWidth, nHeight, hWndParent, hMenu, hInstance, lpParam);
@@ -538,7 +539,8 @@ void OnInitializeHook() {
         Config.Width = GetPrivateProfileIntW(appName, L"Width", 640, IniPath.c_str());
         Config.Height = GetPrivateProfileIntW(appName, L"Height", 480, IniPath.c_str());
         Config.BPP = GetPrivateProfileIntW(appName, L"BPP", 32, IniPath.c_str());
-        Config.Windowed = GetPrivateProfileIntW(appName, L"Windowed", 0, IniPath.c_str());
+        Config.WindowMode = GetPrivateProfileIntW(appName, L"WindowMode", 0, IniPath.c_str());
+        Config.VSync = GetPrivateProfileIntW(appName, L"VSync", 0, IniPath.c_str());
         Config.Antialiasing = GetPrivateProfileIntW(appName, L"Antialiasing", 0, IniPath.c_str());
         Config.Anisotropy = GetPrivateProfileIntW(appName, L"Anisotropy", 0, IniPath.c_str());
     }
@@ -757,11 +759,21 @@ void OnInitializeHook() {
 
         sprintf_s(value, "%d", Config.Antialiasing);
         SetEnvironmentVariable("DXWRAPPER_ANTIALIASING", value);
+
         sprintf_s(value, "%d", Config.Anisotropy);
         SetEnvironmentVariable("DXWRAPPER_ANISOTROPICFILTERING", value);
-        sprintf_s(value, "%d", Config.Windowed);
-        SetEnvironmentVariable("DXWRAPPER_ENABLEWINDOWMODE", value);
-        SetEnvironmentVariable("DXWRAPPER_FULLSCREENWINDOWMODE", strcmp(value, "0") ? "0" : "1");
+
+        sprintf_s(value, "%d", Config.VSync);
+        SetEnvironmentVariable("DXWRAPPER_FORCEVSYNCMODE", "1");
+        SetEnvironmentVariable("DXWRAPPER_ENABLEVSYNC", value);
+
+        SetEnvironmentVariable("DXWRAPPER_ENABLEWINDOWMODE", "0");
+        SetEnvironmentVariable("DXWRAPPER_FULLSCREENWINDOWMODE", "0");
+        if (Config.WindowMode == 2)
+            SetEnvironmentVariable("DXWRAPPER_ENABLEWINDOWMODE", "1");
+
+        if (Config.WindowMode == 1)
+            SetEnvironmentVariable("DXWRAPPER_FULLSCREENWINDOWMODE", "1");
 
         SetEnvironmentVariable("DXWRAPPER_WINDOWMODEBORDER", "1");
         SetEnvironmentVariable("DXWRAPPER_DD7TO9", "1");

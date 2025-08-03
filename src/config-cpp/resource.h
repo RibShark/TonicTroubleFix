@@ -75,6 +75,7 @@
 #define IDC_TEXT4                       145
 #define IDC_STATIC1                     150
 #define IDC_STATIC2                     151
+#define IDC_TEXT5                       151
 #define IDC_STATIC3                     152
 #define IDC_RICHEDIT1                   153
 #define IDC_HOTKEY1                     153
@@ -84,6 +85,8 @@
 #define IDC_COMBO2                      1003
 #define IDC_COMBO3                      1004
 #define IDC_COMBO4                      1005
+#define IDC_COMBO5                      1006
+#define IDC_BUTTON2                     1007
 #define IDC_STATIC                      -1
 #define IDC_BACKGROUND                  -1
 
@@ -94,7 +97,7 @@
 #define _APS_NO_MFC                     1
 #define _APS_NEXT_RESOURCE_VALUE        129
 #define _APS_NEXT_COMMAND_VALUE         32771
-#define _APS_NEXT_CONTROL_VALUE         1003
+#define _APS_NEXT_CONTROL_VALUE         1008
 #define _APS_NEXT_SYMED_VALUE           130
 #endif
 #endif

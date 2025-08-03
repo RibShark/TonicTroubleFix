@@ -1,7 +1,5 @@
 #include "IniFile.h"
 
-#include <utility>
-
 IniFile::IniFile(const std::filesystem::path& mainIniFileName, std::initializer_list<std::filesystem::path> iniFileNames)
 {
     iniFileName = mainIniFileName;
@@ -10,7 +8,8 @@ IniFile::IniFile(const std::filesystem::path& mainIniFileName, std::initializer_
     width = 640;
     height = 480;
     bpp = 32;
-    windowed = false;
+    windowMode = Fullscreen;
+    vsync = true;
     antialiasing = 0;
     anisotropy = 0;
 
@@ -37,7 +36,8 @@ bool IniFile::ReadSettingsFromFile(const std::filesystem::path& iniFileName)
     width = GetPrivateProfileInt(appName, L"Width", width, szIniFileName);
     height = GetPrivateProfileInt(appName, L"Height", height, szIniFileName);
     bpp = GetPrivateProfileInt(appName, L"BPP", bpp, szIniFileName);
-    windowed = GetPrivateProfileInt(appName, L"Windowed", windowed, szIniFileName);
+    windowMode = GetPrivateProfileInt(appName, L"WindowMode", windowMode, szIniFileName);
+    vsync = GetPrivateProfileInt(appName, L"VSync", vsync, szIniFileName);
     antialiasing = GetPrivateProfileInt(appName, L"Antialiasing", antialiasing, szIniFileName);
     anisotropy = GetPrivateProfileInt(appName, L"Anisotropy", anisotropy, szIniFileName);
 
@@ -62,7 +62,8 @@ void IniFile::WriteSettingsToFile()
     WritePrivateProfileString(appName, L"Width", ToCString(width), szIniFileName);
     WritePrivateProfileString(appName, L"Height", ToCString(height), szIniFileName);
     WritePrivateProfileString(appName, L"BPP", ToCString(bpp), szIniFileName);
-    WritePrivateProfileString(appName, L"Windowed", ToCString(windowed), szIniFileName);
+    WritePrivateProfileString(appName, L"WindowMode", ToCString(windowMode), szIniFileName);
+    WritePrivateProfileString(appName, L"VSync", ToCString(vsync), szIniFileName);
     WritePrivateProfileString(appName, L"Antialiasing", ToCString(antialiasing), szIniFileName);
     WritePrivateProfileString(appName, L"Anisotropy", ToCString(anisotropy), szIniFileName);
 

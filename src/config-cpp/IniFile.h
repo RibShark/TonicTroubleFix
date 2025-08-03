@@ -3,11 +3,18 @@
 
 #include <filesystem>
 
+enum WindowMode : UINT
+{
+    Fullscreen,
+    Borderless,
+    Windowed
+};
+
 class IniFile {
 public:
-    DWORD width, height, bpp, antialiasing, anisotropy, gliBuffering, gliAlphaTest;
+    int width, height, bpp, windowMode, antialiasing, anisotropy, gliBuffering, gliAlphaTest;
+    bool vsync;
     CString language, gliDll, gliDriver, gliTexturesMode;
-    bool windowed;
 
     IniFile(const std::filesystem::path&, std::initializer_list<std::filesystem::path>);
     void WriteSettingsToFile();

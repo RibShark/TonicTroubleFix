@@ -75,14 +75,13 @@ BOOL CMyDialog::OnCommand(WPARAM wparam, LPARAM)
     switch (id)
     {
         case IDC_COMBO1:
+        case IDC_COMBO5:
             if (code == CBN_SELCHANGE)
             {
                 UpdateGraphicsModes();
                 return TRUE;
             }
             break;
-        case IDC_CHECK1:
-            return OnToggleWindowed();
         default:
             return FALSE;
     }
@@ -100,12 +99,12 @@ BOOL CMyDialog::OnInitDialog()
     // Attach the controls to our CWnd member objects.
     AttachItem(IDC_COMBO1, m_comboAdapter);
     AttachItem(IDC_COMBO2, m_comboResolution);
-    AttachItem(IDC_CHECK1, m_checkWindowed);
+    AttachItem(IDC_COMBO5, m_comboWindowMode);
+    AttachItem(IDC_CHECK1, m_checkVsync);
     AttachItem(IDC_COMBO3, m_comboAntialiasing);
     AttachItem(IDC_COMBO4, m_comboFiltering);
     AttachItem(IDOK, m_buttonOK);
     AttachItem(IDCANCEL, m_buttonCancel);
-
     // Initialize DirectX
     dx = new DirectX();
 
@@ -137,8 +136,12 @@ BOOL CMyDialog::OnInitDialog()
     selectionIndex = m_comboResolution.FindString(-1, modeString);
     m_comboResolution.SetCurSel(selectionIndex != CB_ERR ? selectionIndex : 0);
 
-    m_checkWindowed.SetCheck(iniFile->windowed);
+    m_comboWindowMode.AddString(L"Fullscreen");
+    m_comboWindowMode.AddString(L"Borderless Fullscreen");
+    m_comboWindowMode.AddString(L"Windowed");
+    m_comboWindowMode.SetCurSel(iniFile->windowMode);
 
+    m_checkVsync.SetCheck(iniFile->vsync);
 
     selectionIndex = m_comboAntialiasing.FindString(-1, ToCString(iniFile->antialiasing));
     m_comboAntialiasing.SetCurSel(selectionIndex != CB_ERR ? selectionIndex : 0);
@@ -185,7 +188,8 @@ void CMyDialog::OnOK()
     modeString.ReleaseBuffer();
     swscanf_s(modeString, L"%i×%i×%i", &iniFile->width, &iniFile->height, &iniFile->bpp);
 
-    iniFile->windowed = m_checkWindowed.GetCheck() == BST_CHECKED;
+    iniFile->windowMode = m_comboWindowMode.GetCurSel();
+    iniFile->vsync = m_checkVsync.GetCheck();
     iniFile->antialiasing = m_comboAntialiasing.GetItemData(m_comboAntialiasing.GetCurSel());
     iniFile->anisotropy = m_comboFiltering.GetItemData(m_comboFiltering.GetCurSel());
 
@@ -218,7 +222,6 @@ void CMyDialog::UpdateGraphicsModes()
     }
     m_comboResolution.ResetContent();
     auto displayModes = dx->GetDisplayModes(m_comboAdapter.GetCurSel());
-    //for (auto& mode : displayModes) {
     for (int i = 0; i < displayModes.size(); i++) {
         CString modeString;
         modeString.Format(L"%i×%i×%i", displayModes[i].width, displayModes[i].height, displayModes[i].bitsPerPixel);
@@ -240,7 +243,7 @@ void CMyDialog::UpdateGraphicsModes()
     }
     m_comboAntialiasing.ResetContent();
     m_comboAntialiasing.AddString(L"None"); // always supported
-    auto antiAliasingModes = dx->GetAntiAliasingModes(m_comboAdapter.GetCurSel(), m_checkWindowed.GetCheck());
+    auto antiAliasingModes = dx->GetAntiAliasingModes(m_comboAdapter.GetCurSel(), m_comboWindowMode.GetCurSel() > 0);
     for (auto& mode : antiAliasingModes) {
         CString modeString;
         modeString.Format(L"%i×", mode);

@@ -34,7 +34,8 @@ private:
     // Member variables
     CComboBox m_comboAdapter;
     CComboBox m_comboResolution;
-    CButton m_checkWindowed;
+    CComboBox m_comboWindowMode;
+    CButton m_checkVsync;
     CComboBox m_comboAntialiasing;
     CComboBox m_comboFiltering;
     CButton m_buttonOK;
