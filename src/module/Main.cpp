@@ -444,6 +444,8 @@ namespace WindowedMode
         case WM_SYSCOMMAND:
             if (wParam == SC_CLOSE || wParam == SC_MINIMIZE)
                 return DefWindowProc(hWnd, msg, wParam, lParam);
+            if (wParam == SC_KEYMENU)
+                return 0;
             break;
         default:
             if (msg >= WM_NCMOUSEMOVE && msg <= WM_NCMBUTTONDBLCLK) // the game disables handling of these for some reason
