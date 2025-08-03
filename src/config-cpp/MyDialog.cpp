@@ -45,6 +45,18 @@ INT_PTR CMyDialog::DialogProc(UINT msg, WPARAM wparam, LPARAM lparam)
 
         switch (msg)
         {
+            case WM_GETMINMAXINFO:
+            {
+                RECT rc = {0, 0, 320, 132};
+                MapDialogRect(rc);
+                AdjustWindowRectEx(&rc, GetStyle(), false, GetExStyle());
+                LONG width = rc.right - rc.left;
+                LONG height = rc.bottom - rc.top;
+
+                auto* minMaxInfo = reinterpret_cast<MINMAXINFO*>(lparam);
+                minMaxInfo->ptMinTrackSize = {width, height};
+                break;
+            }
             case WM_SIZE:
                 // workaround for https://github.com/DavidNash2024/Win32xx/issues/11
                 if (wparam == 0)
@@ -54,9 +66,12 @@ INT_PTR CMyDialog::DialogProc(UINT msg, WPARAM wparam, LPARAM lparam)
             {
                 CRect rc = GetButtonBoxRect();
                 InvalidateRect(rc);
+                break;
             }
             case WM_CTLCOLORSTATIC:
                 return reinterpret_cast<INT_PTR>(GetStockObject(WHITE_BRUSH));
+            default:
+                break;
         }
 
         // Pass unhandled messages on to parent DialogProc.
@@ -152,6 +167,7 @@ BOOL CMyDialog::OnInitDialog()
     m_resizer.Initialize(*this, CRect(0, 0, 400, 200));
     m_resizer.AddChild(m_comboAdapter, CResizer::topright, RD_STRETCH_WIDTH);
     m_resizer.AddChild(m_comboResolution, CResizer::topright, RD_STRETCH_WIDTH);
+    m_resizer.AddChild(m_comboWindowMode, CResizer::topright, RD_STRETCH_WIDTH);
     m_resizer.AddChild(m_comboAntialiasing, CResizer::topright, RD_STRETCH_WIDTH);
     m_resizer.AddChild(m_comboFiltering, CResizer::topright, RD_STRETCH_WIDTH);
     m_resizer.AddChild(m_buttonOK, CResizer::bottomright, 0);
