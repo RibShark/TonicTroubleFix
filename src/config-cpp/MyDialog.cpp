@@ -10,6 +10,23 @@
 // Constructor.
 CMyDialog::CMyDialog(UINT resID) : CDialog(resID)
 {
+    // Initialize DirectX
+    dx = new DirectX();
+
+    // Initialize IniFile
+    std::filesystem::path mainIniFileName;
+    PWSTR savedGamesPath{};
+
+    if (SHGetKnownFolderPath(FOLDERID_SavedGames, KF_FLAG_CREATE, nullptr, &savedGamesPath) == S_OK) {
+        mainIniFileName = savedGamesPath;
+
+        mainIniFileName += "\\Tonic Trouble";
+        std::filesystem::create_directories(mainIniFileName); // create directory if it doesn't exist
+
+        mainIniFileName += "\\ubi.ini";
+        CoTaskMemFree(savedGamesPath);
+    }
+    iniFile = new IniFile(mainIniFileName, {L"C:\\Windows\\Ubisoft\\Ubi.ini", L"Ubi.ini"});
 }
 
 // Called when the dialog window is destroyed.
@@ -105,23 +122,6 @@ BOOL CMyDialog::OnInitDialog()
     AttachItem(IDC_COMBO4, m_comboFiltering);
     AttachItem(IDOK, m_buttonOK);
     AttachItem(IDCANCEL, m_buttonCancel);
-    // Initialize DirectX
-    dx = new DirectX();
-
-    // Initialize IniFile
-    std::filesystem::path mainIniFileName;
-    PWSTR savedGamesPath{};
-
-    if (SHGetKnownFolderPath(FOLDERID_SavedGames, KF_FLAG_CREATE, nullptr, &savedGamesPath) == S_OK) {
-        mainIniFileName = savedGamesPath;
-
-        mainIniFileName += "\\Tonic Trouble";
-        std::filesystem::create_directories(mainIniFileName); // create directory if it doesn't exist
-
-        mainIniFileName += "\\ubi.ini";
-        CoTaskMemFree(savedGamesPath);
-    }
-    iniFile = new IniFile(mainIniFileName, {L"C:\\Windows\\Ubisoft\\Ubi.ini", L"Ubi.ini"});
 
     for (auto& deviceName : dx->GetDeviceNames()) {
         m_comboAdapter.InsertString(m_comboAdapter.GetCount(), deviceName);
