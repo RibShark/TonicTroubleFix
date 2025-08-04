@@ -1,5 +1,8 @@
 cmake_minimum_required(VERSION 3.26)
-project(TonicTroubleFix VERSION 1.0.0 LANGUAGES CXX)
+project(TonicTroubleFix VERSION 1.0.0 LANGUAGES CXX
+        DESCRIPTION "A complete fix for the retail version of Tonic Trouble, allowing it to work seamlessly on modern systems."
+        HOMEPAGE_URL "https://github.com/RibShark/TonicTroubleFix"
+        )
 set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
 
 add_library(${PROJECT_NAME}_module SHARED src/module/Main.cpp
@@ -31,3 +34,31 @@ target_compile_features(${PROJECT_NAME}_config PRIVATE cxx_std_20)
 target_compile_definitions(${PROJECT_NAME}_config PRIVATE UNICODE _UNICODE)
 target_include_directories(${PROJECT_NAME}_config PRIVATE "external/Win32xx/include")
 target_link_libraries(${PROJECT_NAME}_config PRIVATE comctl32 pathcch shlwapi ddraw d3d9 dxguid)
+
+set(INSTALL_RESOURCES "${CMAKE_CURRENT_LIST_DIR}/installer")
+install(TARGETS ${PROJECT_NAME}_module ${PROJECT_NAME}_config RUNTIME DESTINATION "/")
+install(DIRECTORY "${INSTALL_RESOURCES}/files/" DESTINATION "/")
+
+set(CPACK_PACKAGE_VENDOR "Rib")
+set(CPACK_PACKAGE_NAME "Tonic Trouble (+Fix)")
+set(CPACK_PACKAGE_INSTALL_DIRECTORY "Tonic Trouble")
+set(CPACK_PACKAGE_VERSION_MAJOR ${CMAKE_PROJECT_VERSION_MAJOR})
+set(CPACK_PACKAGE_VERSION_MINOR ${CMAKE_PROJECT_VERSION_MINOR})
+set(CPACK_PACKAGE_VERSION_PATCH ${CMAKE_PROJECT_VERSION_PATCH})
+set(CPACK_PACKAGE_FILE_NAME ${PROJECT_NAME}-${PROJECT_VERSION})
+set(CPACK_INCLUDE_TOPLEVEL_DIRECTORY FALSE)
+set(CPACK_VERBATIM_VARIABLES ON)
+set(CPACK_GENERATOR "INNOSETUP" "ZIP")
+
+set(CPACK_INNOSETUP_ARCHITECTURE x86)
+set(CPACK_INNOSETUP_IGNORE_LICENSE_PAGE ON)
+set(CPACK_INNOSETUP_USE_MODERN_WIZARD ON)
+set(CPACK_INNOSETUP_EXTRA_SCRIPTS "${INSTALL_RESOURCES}/ScriptAddons.iss")
+
+include(CPack)
+
+# needed for CLion to have a package target
+add_custom_target(${PROJECT_NAME}_package
+        "${CMAKE_COMMAND}" --build "${CMAKE_BINARY_DIR}" --target package
+        COMMENT "Packaging ${PROJECT_NAME}")
+add_dependencies(${PROJECT_NAME}_package ${PROJECT_NAME}_config ${PROJECT_NAME}_module)
