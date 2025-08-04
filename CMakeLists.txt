@@ -61,8 +61,9 @@ set(CPACK_INNOSETUP_EXTRA_SCRIPTS "${INSTALL_RESOURCES}/ScriptAddons.iss")
 
 include(CPack)
 
-# needed for CLion to have a package target
+# needed to have a package target for all configurations
 add_custom_target(${PROJECT_NAME}_package
-        "${CMAKE_COMMAND}" --build "${CMAKE_BINARY_DIR}" --target package
+        "${CMAKE_CPACK_COMMAND}" -C "${CMAKE_BUILD_TYPE}"
+        WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
         COMMENT "Packaging ${PROJECT_NAME}")
 add_dependencies(${PROJECT_NAME}_package ${PROJECT_NAME}_config ${PROJECT_NAME}_module)
