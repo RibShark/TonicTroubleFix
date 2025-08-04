@@ -37,6 +37,7 @@ target_link_libraries(${PROJECT_NAME}_config PRIVATE comctl32 pathcch shlwapi dd
 
 set(INSTALL_RESOURCES "${CMAKE_CURRENT_LIST_DIR}/installer")
 install(TARGETS ${PROJECT_NAME}_module ${PROJECT_NAME}_config RUNTIME DESTINATION "/")
+install(FILES "${INSTALL_RESOURCES}/license.rtf" DESTINATION "/")
 install(DIRECTORY "${INSTALL_RESOURCES}/files/" DESTINATION "/")
 
 set(CPACK_PACKAGE_VENDOR "Rib")
