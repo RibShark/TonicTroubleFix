@@ -24,6 +24,9 @@ Name: "{group}\Tonic Trouble"; Filename: "{app}\TonicTrouble.exe"; WorkingDir: "
 Name: "{group}\Tonic Trouble - Configuration"; Filename: "{app}\ttconfig.exe"; WorkingDir: "{app}"
 Name: "{group}\Uninstall Tonic Trouble (+Fix)"; Filename: "{uninstallexe}"
 
+[UninstallDelete]
+Type: files; Name: "{app}\*"
+
 [Code]
 function IsAlreadyInstalled: Boolean;
 begin
