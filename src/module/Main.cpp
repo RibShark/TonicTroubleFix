@@ -442,8 +442,10 @@ namespace WindowedMode
             if (wParam == VK_RETURN) return 0;
             break;
         case WM_SYSCOMMAND:
-            if (wParam == SC_CLOSE || wParam == SC_MINIMIZE)
+            if (wParam == SC_MINIMIZE)
                 return DefWindowProc(hWnd, msg, wParam, lParam);
+            if (wParam == SC_CLOSE)
+                TerminateProcess(GetCurrentProcess(), 0);
             if (wParam == SC_KEYMENU)
                 return 0;
             break;
